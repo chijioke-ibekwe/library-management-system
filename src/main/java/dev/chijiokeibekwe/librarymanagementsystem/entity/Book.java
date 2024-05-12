@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @SuperBuilder
@@ -16,7 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "books")
-public class Book extends BaseEntity{
+public class Book extends BaseEntity {
 
     @NotNull(message = "Title is required")
     private String title;
@@ -29,4 +31,7 @@ public class Book extends BaseEntity{
 
     @NotNull(message = "ISBN is required")
     private String isbn;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "book", orphanRemoval = true)
+    private List<BorrowingRecord> borrowingRecords = new ArrayList<>();
 }

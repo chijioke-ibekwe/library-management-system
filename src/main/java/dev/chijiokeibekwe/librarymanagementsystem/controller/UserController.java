@@ -20,7 +20,7 @@ import static dev.chijiokeibekwe.librarymanagementsystem.enums.ResponseStatus.SU
 @Slf4j
 @AllArgsConstructor
 @RestController
-@RequestMapping("/api/v1/users")
+@RequestMapping("/api/users")
 public class UserController {
 
     private final UserService userService;
