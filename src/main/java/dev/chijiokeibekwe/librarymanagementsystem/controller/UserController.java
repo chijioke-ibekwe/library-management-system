@@ -25,7 +25,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @Operation(summary = "Sign up or register", description = "Sign up as a regular user")
+    @Operation(summary = "Sign up or register", description = "Sign up as a user")
     @PostMapping
     public ResponseObject<UserResponse> registerUser(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest){
         log.info("Received user registration request for email: {}", userRegistrationRequest.email());
