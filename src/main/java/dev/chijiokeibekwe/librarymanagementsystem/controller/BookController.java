@@ -53,6 +53,7 @@ public class BookController {
 
     @Operation(summary = "Create a book", description = "Create a new book")
     @PostMapping
+    @PreAuthorize("hasAuthority('books:write')")
         public ResponseObject<BookResponse> createBook(@RequestBody @Valid CreateBookRequest createBookRequest){
         log.info("Received request to create the following book: {}", createBookRequest);
 
@@ -65,6 +66,7 @@ public class BookController {
 
     @Operation(summary = "Update a book", description = "Update an existing book")
     @PatchMapping("/{book_id}")
+    @PreAuthorize("hasAuthority('books:write')")
     public ResponseObject<BookResponse> updateBook(@PathVariable("book_id") Long bookId,
                                                    @RequestBody @Valid UpdateBookRequest updateBookRequest){
         log.info("Received request to update book with ID {} with the following details: {}", bookId, updateBookRequest);
@@ -78,6 +80,7 @@ public class BookController {
 
     @Operation(summary = "Delete a book", description = "Delete an existing book")
     @DeleteMapping("/{book_id}")
+    @PreAuthorize("hasAuthority('books:delete')")
     public ResponseObject<Void> deleteBook(@PathVariable("book_id") Long bookId){
         log.info("Received request to delete book with ID {}", bookId);
         bookService.deleteBook(bookId);
