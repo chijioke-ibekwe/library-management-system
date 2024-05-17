@@ -4,6 +4,8 @@ import dev.chijiokeibekwe.librarymanagementsystem.annotation.PastOrPresentYear;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdateBookRequest(
+        @NotNull(message = "Title is required")
+        String title,
 
         @NotNull(message = "Author is required")
         String author,

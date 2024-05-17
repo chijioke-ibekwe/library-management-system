@@ -65,7 +65,7 @@ public class BookController {
     }
 
     @Operation(summary = "Update a book", description = "Update an existing book")
-    @PatchMapping("/{book_id}")
+    @PutMapping("/{book_id}")
     @PreAuthorize("hasAuthority('books:write')")
     public ResponseObject<BookResponse> updateBook(@PathVariable("book_id") Long bookId,
                                                    @RequestBody @Valid UpdateBookRequest updateBookRequest){
