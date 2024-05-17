@@ -2,9 +2,11 @@ package dev.chijiokeibekwe.librarymanagementsystem.mapper;
 
 import dev.chijiokeibekwe.librarymanagementsystem.dto.CustomUserDetails;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.BookResponse;
+import dev.chijiokeibekwe.librarymanagementsystem.dto.response.PatronResponse;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.RoleResponse;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.UserResponse;
 import dev.chijiokeibekwe.librarymanagementsystem.entity.Book;
+import dev.chijiokeibekwe.librarymanagementsystem.entity.Patron;
 import dev.chijiokeibekwe.librarymanagementsystem.entity.Role;
 import dev.chijiokeibekwe.librarymanagementsystem.entity.User;
 import org.springframework.beans.BeanUtils;
@@ -56,5 +58,12 @@ public class Mapper {
         BeanUtils.copyProperties(book, bookResponse);
 
         return bookResponse;
+    }
+
+    public static PatronResponse toPatronResponse(Patron patron) {
+        PatronResponse patronResponse = new PatronResponse();
+        BeanUtils.copyProperties(patron, patronResponse);
+
+        return patronResponse;
     }
 }
