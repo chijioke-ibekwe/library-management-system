@@ -45,7 +45,7 @@ CREATE TABLE books (
     updated_at                          TIMESTAMP,
     title                               VARCHAR(255) NOT NULL,
     author                              VARCHAR(255) NOT NULL,
-    publication_year                    DATE NOT NULL,
+    publication_year                    INT8 NOT NULL,
     isbn                                VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );

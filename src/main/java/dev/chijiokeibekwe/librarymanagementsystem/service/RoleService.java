@@ -5,5 +5,5 @@ import dev.chijiokeibekwe.librarymanagementsystem.enums.RoleName;
 
 public interface RoleService {
 
-    Role getRoleByUserType(RoleName roleName);
+    Role getRoleByName(RoleName roleName);
 }

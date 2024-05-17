@@ -36,7 +36,7 @@ public class UserServiceImpl implements UserService {
         if(userRepository.existsByUsername(userRegistrationRequest.email()))
             throw new EntityExistsException(String.format("Email %s already exists", userRegistrationRequest.email()));
 
-        Role role = roleService.getRoleByUserType(RoleName.ROLE_USER);
+        Role role = roleService.getRoleByName(RoleName.ROLE_USER);
 
         User user = User.builder()
                 .firstName(userRegistrationRequest.firstName())
