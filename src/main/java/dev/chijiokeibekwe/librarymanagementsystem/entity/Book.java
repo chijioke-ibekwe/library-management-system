@@ -1,5 +1,6 @@
 package dev.chijiokeibekwe.librarymanagementsystem.entity;
 
+import dev.chijiokeibekwe.librarymanagementsystem.enums.BookStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,8 @@ public class Book extends BaseEntity {
 
     @NotNull(message = "ISBN is required")
     private String isbn;
+
+    private BookStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "book", orphanRemoval = true)
     private List<BorrowingRecord> borrowingRecords = new ArrayList<>();

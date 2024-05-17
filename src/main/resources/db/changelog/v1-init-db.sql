@@ -47,6 +47,7 @@ CREATE TABLE books (
     author                              VARCHAR(255) NOT NULL,
     publication_year                    INT8 NOT NULL,
     isbn                                VARCHAR(255) NOT NULL,
+    status                              VARCHAR(255) DEFAULT 'available' NOT NULL,
     PRIMARY KEY (id)
 );
 
@@ -70,7 +71,9 @@ CREATE TABLE borrowing_records (
     created_at                          TIMESTAMP NOT NULL,
     updated_at                          TIMESTAMP,
     borrowing_date                      DATE NOT NULL,
-    return_date                         DATE NOT NULL,
+    due_date                            DATE NOT NULL,
+    return_date                         DATE,
+    status                              VARCHAR(255) DEFAULT 'open' NOT NULL,
     book_id                             INT8 NOT NULL,
     patron_id                           INT8 NOT NULL,
     PRIMARY KEY (id)

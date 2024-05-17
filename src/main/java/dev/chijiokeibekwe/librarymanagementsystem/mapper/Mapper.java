@@ -1,14 +1,8 @@
 package dev.chijiokeibekwe.librarymanagementsystem.mapper;
 
 import dev.chijiokeibekwe.librarymanagementsystem.dto.CustomUserDetails;
-import dev.chijiokeibekwe.librarymanagementsystem.dto.response.BookResponse;
-import dev.chijiokeibekwe.librarymanagementsystem.dto.response.PatronResponse;
-import dev.chijiokeibekwe.librarymanagementsystem.dto.response.RoleResponse;
-import dev.chijiokeibekwe.librarymanagementsystem.dto.response.UserResponse;
-import dev.chijiokeibekwe.librarymanagementsystem.entity.Book;
-import dev.chijiokeibekwe.librarymanagementsystem.entity.Patron;
-import dev.chijiokeibekwe.librarymanagementsystem.entity.Role;
-import dev.chijiokeibekwe.librarymanagementsystem.entity.User;
+import dev.chijiokeibekwe.librarymanagementsystem.dto.response.*;
+import dev.chijiokeibekwe.librarymanagementsystem.entity.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
@@ -65,5 +59,14 @@ public class Mapper {
         BeanUtils.copyProperties(patron, patronResponse);
 
         return patronResponse;
+    }
+
+    public static BorrowingRecordResponse toBorrowingRecordResponse(BorrowingRecord borrowingRecord) {
+        BorrowingRecordResponse borrowingRecordResponse = new BorrowingRecordResponse();
+        BeanUtils.copyProperties(borrowingRecord, borrowingRecordResponse, "book", "patron");
+
+        borrowingRecordResponse.setBook(toBookResponse(borrowingRecord.getBook()));
+        borrowingRecordResponse.setPatron(toPatronResponse(borrowingRecord.getPatron()));
+        return borrowingRecordResponse;
     }
 }

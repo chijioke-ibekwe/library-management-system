@@ -1,5 +1,7 @@
 package dev.chijiokeibekwe.librarymanagementsystem.entity;
 
+import dev.chijiokeibekwe.librarymanagementsystem.enums.BookStatus;
+import dev.chijiokeibekwe.librarymanagementsystem.enums.BorrowingRecordStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -20,8 +22,12 @@ public class BorrowingRecord extends BaseEntity {
     @NotNull(message = "Borrowing date is required")
     private LocalDate borrowingDate;
 
-    @NotNull(message = "Return date is required")
+    @NotNull(message = "Due date is required")
+    private LocalDate dueDate;
+
     private LocalDate returnDate;
+
+    private BorrowingRecordStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="book_id", nullable = false)

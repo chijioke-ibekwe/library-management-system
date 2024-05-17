@@ -1,5 +1,6 @@
 package dev.chijiokeibekwe.librarymanagementsystem.dto.response;
 
+import dev.chijiokeibekwe.librarymanagementsystem.enums.BookStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,4 +23,6 @@ public class BookResponse {
     private LocalDate publicationYear;
 
     private String isbn;
+
+    private BookStatus status;
 }
