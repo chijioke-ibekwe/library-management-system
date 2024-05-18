@@ -4,6 +4,7 @@ import dev.chijiokeibekwe.librarymanagementsystem.common.ResponseObject;
 import dev.chijiokeibekwe.librarymanagementsystem.enums.ResponseStatus;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.RollbackException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -66,6 +68,34 @@ public class CustomExceptionHandler {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
+    @ExceptionHandler(value = MethodArgumentNotValidException.class)
+    public ResponseEntity<ResponseObject<?>> handleInvalidMethodArgumentException(MethodArgumentNotValidException e) {
+
+        log.error(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), e);
+
+        ResponseObject<?> response =  new ResponseObject<>(
+                ResponseStatus.FAILED,
+                e.getBindingResult().getAllErrors().get(0).getDefaultMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(value = MissingServletRequestParameterException.class)
+    public ResponseEntity<ResponseObject<?>> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+
+        log.error(e.getMessage(), e);
+
+        ResponseObject<?> response =  new ResponseObject<>(
+                ResponseStatus.FAILED,
+                e.getMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ResponseEntity<ResponseObject<?>> handleEntityNotFoundException(EntityNotFoundException e) {
 
@@ -106,27 +136,11 @@ public class CustomExceptionHandler {
                 null
         );
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
-    @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<ResponseObject<?>> handleInvalidMethodArgumentException(MethodArgumentNotValidException e) {
-
-        log.error(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), e);
-
-        ResponseObject<?> response =  new ResponseObject<>(
-                ResponseStatus.FAILED,
-                e.getBindingResult().getAllErrors().get(0).getDefaultMessage(),
-                null
-        );
-
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
-    }
-
-    @ExceptionHandler(value = MissingServletRequestParameterException.class)
-    public ResponseEntity<ResponseObject<?>> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
-
-        log.error(e.getMessage(), e);
+    @ExceptionHandler({TransactionSystemException.class})
+    public ResponseEntity<ResponseObject<?>> handleTransactionSystemException(TransactionSystemException e) {
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
@@ -134,7 +148,22 @@ public class CustomExceptionHandler {
                 null
         );
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+        if (e.getRootCause() instanceof ConstraintViolationException constraintViolationException) {
+            List<ConstraintViolation<?>> constraintViolations = new ArrayList<>(constraintViolationException.getConstraintViolations());
+            log.error(constraintViolations.get(0).getMessage(), constraintViolationException);
+
+            response =  new ResponseObject<>(
+                    ResponseStatus.FAILED,
+                    constraintViolations.get(0).getMessage(),
+                    null
+            );
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+
+        log.error(e.getMessage(), e);
+
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
     @ExceptionHandler(value = Exception.class)
