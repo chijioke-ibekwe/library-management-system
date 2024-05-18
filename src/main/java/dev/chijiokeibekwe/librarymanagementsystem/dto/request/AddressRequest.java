@@ -7,10 +7,10 @@ public record AddressRequest(
 
         String city,
 
-        @NotNull(message = "State in address is required")
+        @NotNull(message = "Address state is required")
         String state,
 
-        @NotNull(message = "Country in address is required")
+        @NotNull(message = "Address country is required")
         String country
 )
 {

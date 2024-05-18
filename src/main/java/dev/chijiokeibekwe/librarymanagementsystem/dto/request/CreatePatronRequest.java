@@ -9,8 +9,10 @@ public record CreatePatronRequest(
         @NotNull(message = "Last name is required")
         String lastName,
 
+        @NotNull(message = "Contact is required")
         ContactDetailsRequest contact,
 
+        @NotNull(message = "Address is required")
         AddressRequest address
 )
 {
