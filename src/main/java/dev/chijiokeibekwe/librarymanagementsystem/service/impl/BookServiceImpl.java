@@ -50,6 +50,7 @@ public class BookServiceImpl implements BookService {
     public BookResponse updateBook(Long bookId, UpdateBookRequest updateBookRequest) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found"));
 
+        book.setTitle(updateBookRequest.title());
         book.setAuthor(updateBookRequest.author());
         book.setPublicationYear(updateBookRequest.publicationYear());
         book.setIsbn(updateBookRequest.isbn());
