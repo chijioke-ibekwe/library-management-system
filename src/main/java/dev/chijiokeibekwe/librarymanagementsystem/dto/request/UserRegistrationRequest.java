@@ -15,9 +15,6 @@ public record UserRegistrationRequest (
         @NotNull(message = "Password is required")
         String password,
 
-        @NotNull(message = "Password confirmation is required")
-        String passwordConfirmation,
-
         @NotNull(message = "Phone number is required")
         String phoneNumber
 )

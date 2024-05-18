@@ -1,7 +1,5 @@
 package dev.chijiokeibekwe.librarymanagementsystem.dto.request;
 
-import dev.chijiokeibekwe.librarymanagementsystem.entity.Address;
-import dev.chijiokeibekwe.librarymanagementsystem.entity.ContactDetails;
 import jakarta.validation.constraints.NotNull;
 
 public record UpdatePatronRequest(
@@ -11,9 +9,9 @@ public record UpdatePatronRequest(
         @NotNull(message = "Last name is required")
         String lastName,
 
-        ContactDetails contact,
+        ContactDetailsRequest contact,
 
-        Address address
+        AddressRequest address
 )
 {
     //

@@ -18,10 +18,10 @@ import java.util.List;
 @Table(name = "patrons")
 public class Patron extends BaseEntity {
 
-    @NotNull(message = "First name is required")
+    @NotNull(message = "First name is missing on patron")
     private String firstName;
 
-    @NotNull(message = "Last name is required")
+    @NotNull(message = "Last name is missing on patron")
     private String lastName;
 
     @Embedded

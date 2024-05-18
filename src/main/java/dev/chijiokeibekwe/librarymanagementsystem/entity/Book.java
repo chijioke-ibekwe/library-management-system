@@ -19,18 +19,19 @@ import java.util.List;
 @Table(name = "books")
 public class Book extends BaseEntity {
 
-    @NotNull(message = "Title is required")
+    @NotNull(message = "Title is missing on book")
     private String title;
 
-    @NotNull(message = "Author is required")
+    @NotNull(message = "Author is missing on book")
     private String author;
 
-    @NotNull(message = "Publication year is required")
+    @NotNull(message = "Publication year is missing on book")
     private Integer publicationYear;
 
-    @NotNull(message = "ISBN is required")
+    @NotNull(message = "ISBN is missing on book")
     private String isbn;
 
+    @NotNull(message = "Status is missing on book")
     private BookStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "book", orphanRemoval = true)

@@ -3,6 +3,8 @@ package dev.chijiokeibekwe.librarymanagementsystem.service.impl;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.request.CreatePatronRequest;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.request.UpdatePatronRequest;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.PatronResponse;
+import dev.chijiokeibekwe.librarymanagementsystem.entity.Address;
+import dev.chijiokeibekwe.librarymanagementsystem.entity.ContactDetails;
 import dev.chijiokeibekwe.librarymanagementsystem.entity.Patron;
 import dev.chijiokeibekwe.librarymanagementsystem.mapper.Mapper;
 import dev.chijiokeibekwe.librarymanagementsystem.repository.PatronRepository;
@@ -45,8 +47,13 @@ public class PatronServiceImpl implements PatronService {
     public PatronResponse updatePatron(Long patronId, UpdatePatronRequest updatePatronRequest) {
         Patron patron = patronRepository.findById(patronId).orElseThrow(() -> new EntityNotFoundException("Patron not found"));
 
-        patron.setContact(updatePatronRequest.contact());
-        patron.setAddress(updatePatronRequest.address());
+        ContactDetails contact = new ContactDetails();
+        Address address = new Address();
+        BeanUtils.copyProperties(updatePatronRequest.contact(), contact);
+        BeanUtils.copyProperties(updatePatronRequest.address(), address);
+
+        patron.setContact(contact);
+        patron.setAddress(address);
 
         return Mapper.toPatronResponse(patronRepository.save(patron));
     }

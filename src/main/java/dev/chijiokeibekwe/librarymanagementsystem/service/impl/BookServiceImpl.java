@@ -4,6 +4,7 @@ import dev.chijiokeibekwe.librarymanagementsystem.dto.request.CreateBookRequest;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.request.UpdateBookRequest;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.BookResponse;
 import dev.chijiokeibekwe.librarymanagementsystem.entity.Book;
+import dev.chijiokeibekwe.librarymanagementsystem.enums.BookStatus;
 import dev.chijiokeibekwe.librarymanagementsystem.mapper.Mapper;
 import dev.chijiokeibekwe.librarymanagementsystem.repository.BookRepository;
 import dev.chijiokeibekwe.librarymanagementsystem.service.BookService;
@@ -39,6 +40,7 @@ public class BookServiceImpl implements BookService {
                 .author(createBookRequest.author())
                 .publicationYear(createBookRequest.publicationYear())
                 .isbn(createBookRequest.isbn())
+                .status(BookStatus.AVAILABLE)
                 .build();
 
         return Mapper.toBookResponse(bookRepository.save(book));

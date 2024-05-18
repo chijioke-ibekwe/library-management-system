@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Builder
 public class ContactDetails {
 
-    @NotNull(message = "Phone number is required")
+    @NotNull(message = "Phone number is missing on patron")
     private String phoneNumber;
 
     private String email;

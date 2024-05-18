@@ -61,8 +61,8 @@ CREATE TABLE patrons (
     phone_number                        VARCHAR(255) NOT NULL,
     street_address                      VARCHAR(255),
     city                                VARCHAR(255),
-    state                               VARCHAR(255),
-    country                             VARCHAR(255),
+    state                               VARCHAR(255) NOT NULL,
+    country                             VARCHAR(255) NOT NULL,
     PRIMARY KEY (id)
 );
 

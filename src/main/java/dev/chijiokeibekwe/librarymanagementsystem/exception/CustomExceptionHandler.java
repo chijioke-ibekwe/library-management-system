@@ -4,6 +4,7 @@ import dev.chijiokeibekwe.librarymanagementsystem.common.ResponseObject;
 import dev.chijiokeibekwe.librarymanagementsystem.enums.ResponseStatus;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
@@ -93,11 +97,12 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<ResponseObject<?>> handleConstraintViolationException(ConstraintViolationException e) {
 
-        log.error(e.getMessage(), e);
+        List<ConstraintViolation<?>> constraintViolations = new ArrayList<>(e.getConstraintViolations());
+        log.error(constraintViolations.get(0).getMessage(), e);
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
-                e.getMessage(),
+                constraintViolations.get(0).getMessage(),
                 null
         );
 
@@ -107,7 +112,7 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseObject<?>> handleInvalidMethodArgumentException(MethodArgumentNotValidException e) {
 
-        log.error(e.getMessage(), e);
+        log.error(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), e);
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
