@@ -35,7 +35,7 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found"));
 
         if(book.getStatus().equals(BookStatus.UNAVAILABLE)) {
-            throw new BookUnavailableException(String.format("Book with title - %s is not available for borrowing", book.getTitle()));
+            throw new BookUnavailableException(String.format("Book with title '%s' is not available for borrowing", book.getTitle()));
         }
 
         Patron patron = patronRepository.findById(patronId).orElseThrow(() -> new EntityNotFoundException("Patron not found"));
@@ -46,6 +46,7 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
         BorrowingRecord borrowingRecord = BorrowingRecord.builder()
                 .borrowingDate(bookBorrowingRequest.borrowingDate())
                 .dueDate(bookBorrowingRequest.dueDate())
+                .status(BorrowingRecordStatus.OPEN)
                 .book(book)
                 .patron(patron)
                 .build();
