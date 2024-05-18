@@ -37,7 +37,7 @@ public class UserController {
         );
     }
 
-    @Operation(summary = "Fetch all users", description = "Fetch all users (regular users and administrators)")
+    @Operation(summary = "Fetch all users", description = "Fetch all users on the platform")
     @GetMapping
     @PreAuthorize("hasAuthority('users:read')")
     public ResponseObject<Page<UserResponse>> getAllUsers(@PageableDefault(
@@ -51,7 +51,7 @@ public class UserController {
         );
     }
 
-    @Operation(summary = "Fetch a single user", description = "Fetch a single user (regular user and administrator)")
+    @Operation(summary = "Fetch a single user", description = "Fetch a single user on the platform")
     @GetMapping("/{id}")
     @PreAuthorize("hasAuthority('users:read')")
     public ResponseObject<UserResponse> getUser(@PathVariable Long id){
