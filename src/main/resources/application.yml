@@ -20,7 +20,7 @@ spring:
 rsa:
   public-key: classpath:certs/public.pem
   private-key: classpath:certs/private.pem
-  expiration-in-seconds: 1800
+  expiration-in-seconds: 21600
 
 springdoc:
   api-docs:
