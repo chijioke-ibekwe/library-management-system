@@ -1,6 +1,7 @@
 package dev.chijiokeibekwe.librarymanagementsystem.dto.response;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import dev.chijiokeibekwe.librarymanagementsystem.dto.serializers.CustomLocalDateSerializer;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.serializers.CustomLocalDateTimeSerializer;
 import dev.chijiokeibekwe.librarymanagementsystem.enums.BorrowingRecordStatus;
 import lombok.AllArgsConstructor;
@@ -22,10 +23,13 @@ public class BorrowingRecordResponse {
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
     private LocalDateTime createdAt;
 
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate borrowingDate;
 
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate dueDate;
 
+    @JsonSerialize(using = CustomLocalDateSerializer.class)
     private LocalDate returnDate;
 
     private BorrowingRecordStatus status;
