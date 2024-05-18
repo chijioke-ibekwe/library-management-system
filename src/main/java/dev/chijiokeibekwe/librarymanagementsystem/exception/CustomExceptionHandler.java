@@ -4,20 +4,22 @@ import dev.chijiokeibekwe.librarymanagementsystem.common.ResponseObject;
 import dev.chijiokeibekwe.librarymanagementsystem.enums.ResponseStatus;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.RollbackException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.transaction.TransactionSystemException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +126,20 @@ public class CustomExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(value = HttpMessageNotReadableException.class)
+    public ResponseEntity<ResponseObject<?>> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
+
+        log.error(e.getMessage(), e);
+
+        ResponseObject<?> response =  new ResponseObject<>(
+                ResponseStatus.FAILED,
+                e.getMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<ResponseObject<?>> handleConstraintViolationException(ConstraintViolationException e) {
 
@@ -164,6 +180,48 @@ public class CustomExceptionHandler {
         log.error(e.getMessage(), e);
 
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+    }
+
+    @ExceptionHandler(value = BookUnavailableException.class)
+    public ResponseEntity<ResponseObject<?>> handleBookUnavailableException(BookUnavailableException e) {
+
+        log.error(e.getMessage(), e);
+
+        ResponseObject<?> response =  new ResponseObject<>(
+                ResponseStatus.FAILED,
+                e.getMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<ResponseObject<?>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
+
+        log.error(e.getMessage(), e);
+
+        ResponseObject<?> response =  new ResponseObject<>(
+                ResponseStatus.FAILED,
+                e.getMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED).body(response);
+    }
+
+    @ExceptionHandler(value = NoResourceFoundException.class)
+    public ResponseEntity<ResponseObject<?>> handleNoResourceFoundException(NoResourceFoundException e) {
+
+        log.error(e.getMessage(), e);
+
+        ResponseObject<?> response =  new ResponseObject<>(
+                ResponseStatus.FAILED,
+                e.getMessage(),
+                null
+        );
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(value = Exception.class)
