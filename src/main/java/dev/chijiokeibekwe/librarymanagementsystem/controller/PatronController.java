@@ -65,7 +65,7 @@ public class PatronController {
     }
 
     @Operation(summary = "Update a patron", description = "Update an existing patron")
-    @PatchMapping("/{patron_id}")
+    @PutMapping("/{patron_id}")
     @PreAuthorize("hasAuthority('patrons:write')")
     public ResponseObject<PatronResponse> updatePatron(@PathVariable("patron_id") Long patronId,
                                                        @RequestBody @Valid UpdatePatronRequest updatePatronRequest){
