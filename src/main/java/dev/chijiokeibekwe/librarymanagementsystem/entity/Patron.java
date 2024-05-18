@@ -1,6 +1,7 @@
 package dev.chijiokeibekwe.librarymanagementsystem.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,9 +25,11 @@ public class Patron extends BaseEntity {
     @NotNull(message = "Last name is missing on patron")
     private String lastName;
 
+    @Valid
     @Embedded
     private ContactDetails contact;
 
+    @Valid
     @Embedded
     private Address address;
 
