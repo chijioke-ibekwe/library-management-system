@@ -38,7 +38,15 @@ public class PatronServiceImpl implements PatronService {
     @Override
     public PatronResponse createPatron(CreatePatronRequest createPatronRequest) {
         Patron patron = new Patron();
+        ContactDetails contact = new ContactDetails();
+        Address address = new Address();
+
         BeanUtils.copyProperties(createPatronRequest, patron);
+        BeanUtils.copyProperties(createPatronRequest.contact(), contact);
+        BeanUtils.copyProperties(createPatronRequest.address(), address);
+
+        patron.setContact(contact);
+        patron.setAddress(address);
 
         return Mapper.toPatronResponse(patronRepository.save(patron));
     }
