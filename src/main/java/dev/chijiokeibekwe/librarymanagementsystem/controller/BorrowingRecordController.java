@@ -31,7 +31,7 @@ public class BorrowingRecordController {
 
         return new ResponseObject<>(
                 SUCCESSFUL,
-                null,
+                "Book borrowing recorded successfully",
                 borrowingRecordService.recordBookBorrowing(bookId, patronId, bookBorrowingRequest)
         );
     }
@@ -45,7 +45,7 @@ public class BorrowingRecordController {
 
         return new ResponseObject<>(
                 SUCCESSFUL,
-                null,
+                "Book return recorded successfully",
                 borrowingRecordService.recordBookReturn(bookId, patronId, bookReturnRequest)
         );
     }
