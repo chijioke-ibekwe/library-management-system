@@ -14,7 +14,7 @@ public class CustomLocalDateTimeSerializer extends JsonSerializer<LocalDateTime>
     public void serialize(LocalDateTime localDateTime, JsonGenerator jsonGenerator,
                           SerializerProvider serializerProvider)
             throws IOException {
-        String dateTimeString = localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
+        String dateTimeString = localDateTime.format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm"));
         jsonGenerator.writeString(dateTimeString);
     }
 }
