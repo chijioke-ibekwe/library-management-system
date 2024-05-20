@@ -10,6 +10,7 @@ import dev.chijiokeibekwe.librarymanagementsystem.repository.BookRepository;
 import dev.chijiokeibekwe.librarymanagementsystem.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @Cacheable(value="book_details", key="#bookId")
     public BookResponse getBook(Long bookId) {
 
         return bookRepository.findById(bookId).map(Mapper::toBookResponse)

@@ -12,6 +12,7 @@ import dev.chijiokeibekwe.librarymanagementsystem.service.PatronService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -29,6 +30,7 @@ public class PatronServiceImpl implements PatronService {
     }
 
     @Override
+    @Cacheable(value="patron_details", key="#patronId")
     public PatronResponse getPatron(Long patronId) {
 
         return patronRepository.findById(patronId).map(Mapper::toPatronResponse)
