@@ -1,6 +1,8 @@
 package dev.chijiokeibekwe.librarymanagementsystem.dto.response;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import dev.chijiokeibekwe.librarymanagementsystem.dto.serializers.CustomLocalDateTimeDeserializer;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.serializers.CustomLocalDateTimeSerializer;
 import dev.chijiokeibekwe.librarymanagementsystem.entity.Address;
 import dev.chijiokeibekwe.librarymanagementsystem.entity.ContactDetails;
@@ -20,6 +22,7 @@ public class PatronResponse {
     private Long id;
 
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    @JsonDeserialize(using = CustomLocalDateTimeDeserializer.class)
     private LocalDateTime createdAt;
 
     private String firstName;
