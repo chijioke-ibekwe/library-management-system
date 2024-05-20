@@ -12,7 +12,7 @@ public @interface WithMockUser {
 
     String id() default "1";
 
-    String email() default "jane.doe@library.com";
+    String email() default "john.doe@library.com";
 
     String phone() default "+2348012345678";
 

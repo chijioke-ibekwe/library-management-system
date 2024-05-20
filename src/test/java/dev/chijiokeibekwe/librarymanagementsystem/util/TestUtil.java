@@ -9,11 +9,15 @@ import dev.chijiokeibekwe.librarymanagementsystem.entity.*;
 import dev.chijiokeibekwe.librarymanagementsystem.enums.BookStatus;
 import dev.chijiokeibekwe.librarymanagementsystem.enums.BorrowingRecordStatus;
 import dev.chijiokeibekwe.librarymanagementsystem.enums.RoleName;
+import org.springframework.security.oauth2.jwt.Jwt;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TestUtil {
 
@@ -119,6 +123,26 @@ public class TestUtil {
                 .build();
     }
 
+    public Patron getPatron() {
+
+        return Patron.builder()
+                .id(2L)
+                .createdAt(LocalDateTime.of(2023, 5, 18, 15, 22))
+                .firstName("Peter")
+                .lastName("Obi")
+                .contact(ContactDetails.builder()
+                        .phoneNumber("+2347088889999")
+                        .email("peter.obi@library.com")
+                        .build())
+                .address(Address.builder()
+                        .streetAddress("23 Johnson Street")
+                        .city("Ikeja")
+                        .state("Lagos")
+                        .country("Nigeria")
+                        .build())
+                .build();
+    }
+
     public PatronResponse getPatronResponse() {
 
         return PatronResponse.builder()
@@ -139,6 +163,19 @@ public class TestUtil {
                 .build();
     }
 
+    public BorrowingRecord getBorrowingRecord() {
+
+        return BorrowingRecord.builder()
+                .id(5L)
+                .createdAt(LocalDateTime.of(2022, 7, 12, 9, 32))
+                .borrowingDate(LocalDate.of(2022, 7, 12))
+                .dueDate(LocalDate.of(2022, 7, 19))
+                .status(BorrowingRecordStatus.OPEN)
+                .book(this.getBook())
+                .patron(this.getPatron())
+                .build();
+    }
+
     public BorrowingRecordResponse getBorrowingRecordResponse() {
 
         return BorrowingRecordResponse.builder()
@@ -150,5 +187,21 @@ public class TestUtil {
                 .book(this.getBookResponse())
                 .patron(this.getPatronResponse())
                 .build();
+    }
+
+    public Jwt getJwt() {
+        Map<String, Object> headers = new HashMap<>();
+        headers.put("algo", "HS256");
+
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("issuedBy", "self");
+
+        return new Jwt(
+                this.getAuthenticationResponse().accessToken(),
+                Instant.now(),
+                Instant.now().plusSeconds(1800L),
+                headers,
+                claims
+        );
     }
 }

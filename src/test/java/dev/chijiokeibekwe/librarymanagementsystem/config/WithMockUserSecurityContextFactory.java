@@ -1,6 +1,7 @@
 package dev.chijiokeibekwe.librarymanagementsystem.config;
 
 import dev.chijiokeibekwe.librarymanagementsystem.annotation.WithMockUser;
+import dev.chijiokeibekwe.librarymanagementsystem.dto.CustomUserDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,7 +35,7 @@ public class WithMockUserSecurityContextFactory implements WithSecurityContextFa
                 .collect(Collectors.toList());
 
         Authentication authentication = new UsernamePasswordAuthenticationToken(
-                user.email(),
+                new CustomUserDetails(1L, "John", "Doe", user.phone(), grantedAuthorities, null, user.email(), true, true, true, true),
                 null,
                 grantedAuthorities
         );
