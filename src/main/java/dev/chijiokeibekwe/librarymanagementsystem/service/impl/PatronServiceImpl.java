@@ -12,6 +12,8 @@ import dev.chijiokeibekwe.librarymanagementsystem.service.PatronService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.BeanUtils;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -54,6 +56,7 @@ public class PatronServiceImpl implements PatronService {
     }
 
     @Override
+    @CachePut(value="patron_details", key="#patronId")
     public PatronResponse updatePatron(Long patronId, UpdatePatronRequest updatePatronRequest) {
         Patron patron = patronRepository.findById(patronId).orElseThrow(() -> new EntityNotFoundException("Patron not found"));
 
@@ -69,6 +72,7 @@ public class PatronServiceImpl implements PatronService {
     }
 
     @Override
+    @CacheEvict(value="patron_details", key="#patronId")
     public void deletePatron(Long patronId) {
         Patron patron = patronRepository.findById(patronId).orElseThrow(() -> new EntityNotFoundException("Patron not found"));
 

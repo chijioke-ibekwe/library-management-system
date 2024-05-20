@@ -16,6 +16,7 @@ import dev.chijiokeibekwe.librarymanagementsystem.repository.PatronRepository;
 import dev.chijiokeibekwe.librarymanagementsystem.service.BorrowingRecordService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,6 +32,7 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
 
     @Override
     @Transactional
+    @CacheEvict(value="book_details", key="#bookId")
     public BorrowingRecordResponse recordBookBorrowing(Long bookId, Long patronId, BookBorrowingRequest bookBorrowingRequest) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found"));
 
@@ -56,6 +58,7 @@ public class BorrowingRecordServiceImpl implements BorrowingRecordService {
 
     @Override
     @Transactional
+    @CacheEvict(value="book_details", key="#bookId")
     public BorrowingRecordResponse recordBookReturn(Long bookId, Long patronId, BookReturnRequest bookReturnRequest) {
         BorrowingRecord borrowingRecord = borrowingRecordRepository
                 .findByBookIdAndPatronIdAndStatus(bookId, patronId, BorrowingRecordStatus.OPEN)

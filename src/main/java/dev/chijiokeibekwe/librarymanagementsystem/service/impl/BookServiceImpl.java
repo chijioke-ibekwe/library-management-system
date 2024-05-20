@@ -10,6 +10,8 @@ import dev.chijiokeibekwe.librarymanagementsystem.repository.BookRepository;
 import dev.chijiokeibekwe.librarymanagementsystem.service.BookService;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -49,6 +51,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @CachePut(value="book_details", key="#bookId")
     public BookResponse updateBook(Long bookId, UpdateBookRequest updateBookRequest) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found"));
 
@@ -61,6 +64,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
+    @CacheEvict(value="book_details", key="#bookId")
     public void deleteBook(Long bookId) {
         Book book = bookRepository.findById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found"));
 
