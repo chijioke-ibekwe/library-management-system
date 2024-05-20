@@ -60,7 +60,7 @@ public class UserServiceTest {
 
         assertThat(userArgumentCaptor.getValue().getFirstName()).isEqualTo("John");
         assertThat(userArgumentCaptor.getValue().getLastName()).isEqualTo("Doe");
-        assertThat(userArgumentCaptor.getValue().getUsername()).isEqualTo("john.doe@starter.com");
+        assertThat(userArgumentCaptor.getValue().getUsername()).isEqualTo("john.doe@library.com");
         assertThat(userArgumentCaptor.getValue().getPassword()).isEqualTo("abcde");
 
         assertThat(response.getRole().getId()).isEqualTo(1L);
@@ -74,7 +74,7 @@ public class UserServiceTest {
 
         assertThatThrownBy(() -> userService.registerUser(testUtil.getUserRegistrationRequest()))
                 .isInstanceOf(EntityExistsException.class)
-                .hasMessage("Email john.doe@starter.com already exists");
+                .hasMessage("Email john.doe@library.com already exists");
     }
 
     @Test
@@ -86,7 +86,7 @@ public class UserServiceTest {
         assertThat(response.getContent().get(0).getId()).isEqualTo(1L);
         assertThat(response.getContent().get(0).getFirstName()).isEqualTo("John");
         assertThat(response.getContent().get(0).getLastName()).isEqualTo("Doe");
-        assertThat(response.getContent().get(0).getUsername()).isEqualTo("john.doe@starter.com");
+        assertThat(response.getContent().get(0).getUsername()).isEqualTo("john.doe@library.com");
         assertThat(response.getContent().get(0).getRole().getName()).isEqualTo(RoleName.ROLE_USER);
         assertThat(response.getContent().get(0).getRole().getPermissions()).contains("users:read");
     }
@@ -100,7 +100,7 @@ public class UserServiceTest {
         assertThat(response.getId()).isEqualTo(1L);
         assertThat(response.getFirstName()).isEqualTo("John");
         assertThat(response.getLastName()).isEqualTo("Doe");
-        assertThat(response.getUsername()).isEqualTo("john.doe@starter.com");
+        assertThat(response.getUsername()).isEqualTo("john.doe@library.com");
         assertThat(response.getRole().getName()).isEqualTo(RoleName.ROLE_USER);
         assertThat(response.getRole().getPermissions()).contains("users:read");
     }

@@ -43,7 +43,7 @@ public class TestUtil {
         return new UserRegistrationRequest(
                 "John",
                 "Doe",
-                "john.doe@starter.com",
+                "john.doe@library.com",
                 "password",
                 "+2348012345678"
         );
@@ -55,7 +55,7 @@ public class TestUtil {
                 .id(1L)
                 .firstName("John")
                 .lastName("Doe")
-                .username("john.doe@starter.com")
+                .username("john.doe@library.com")
                 .phoneNumber("+2348012345678")
                 .role(RoleResponse.builder()
                         .id(2L)
@@ -91,7 +91,7 @@ public class TestUtil {
                 .id(1L)
                 .firstName("John")
                 .lastName("Doe")
-                .username("john.doe@starter.com")
+                .username("john.doe@library.com")
                 .phoneNumber("+2348012345678")
                 .role(this.getUserRole())
                 .build();
