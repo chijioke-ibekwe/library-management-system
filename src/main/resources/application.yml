@@ -18,7 +18,6 @@ spring:
     change-log: 'classpath:/db/changelog-master.yaml'
   data:
     redis:
-      database: 0
       host: localhost
       port: 6379
       password: redis_password
