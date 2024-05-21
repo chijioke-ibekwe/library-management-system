@@ -31,8 +31,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = AuthenticationException.class)
     public ResponseEntity<ResponseObject<?>> handleAuthenticationException(AuthenticationException e) {
 
-        log.error(e.getMessage(), e);
-
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
                 "Token is missing or invalid",
@@ -44,8 +42,6 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = AccessDeniedException.class)
     public ResponseEntity<ResponseObject<?>> handleAccessDeniedException(AccessDeniedException e) {
-
-        log.error(e.getMessage(), e);
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
@@ -59,8 +55,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = BadCredentialsException.class)
     public ResponseEntity<ResponseObject<?>> handleBadCredentialsException(BadCredentialsException e) {
 
-        log.error(e.getMessage(), e);
-
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
                 "Invalid username or password",
@@ -72,8 +66,6 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseObject<?>> handleInvalidMethodArgumentException(MethodArgumentNotValidException e) {
-
-        log.error(e.getBindingResult().getAllErrors().get(0).getDefaultMessage(), e);
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
@@ -87,8 +79,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = MissingServletRequestParameterException.class)
     public ResponseEntity<ResponseObject<?>> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
 
-        log.error(e.getMessage(), e);
-
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
                 e.getMessage(),
@@ -100,8 +90,6 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = EntityNotFoundException.class)
     public ResponseEntity<ResponseObject<?>> handleEntityNotFoundException(EntityNotFoundException e) {
-
-        log.error(e.getMessage(), e);
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
@@ -115,8 +103,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = EntityExistsException.class)
     public ResponseEntity<ResponseObject<?>> handleEntityExistsException(EntityExistsException e) {
 
-        log.error(e.getMessage(), e);
-
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
                 e.getMessage(),
@@ -128,8 +114,6 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = HttpMessageNotReadableException.class)
     public ResponseEntity<ResponseObject<?>> handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
-
-        log.error(e.getMessage(), e);
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
@@ -144,7 +128,6 @@ public class CustomExceptionHandler {
     public ResponseEntity<ResponseObject<?>> handleConstraintViolationException(ConstraintViolationException e) {
 
         List<ConstraintViolation<?>> constraintViolations = new ArrayList<>(e.getConstraintViolations());
-        log.error(constraintViolations.get(0).getMessage(), e);
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
@@ -166,7 +149,6 @@ public class CustomExceptionHandler {
 
         if (e.getRootCause() instanceof ConstraintViolationException constraintViolationException) {
             List<ConstraintViolation<?>> constraintViolations = new ArrayList<>(constraintViolationException.getConstraintViolations());
-            log.error(constraintViolations.get(0).getMessage(), constraintViolationException);
 
             response =  new ResponseObject<>(
                     ResponseStatus.FAILED,
@@ -177,15 +159,11 @@ public class CustomExceptionHandler {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
 
-        log.error(e.getMessage(), e);
-
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 
     @ExceptionHandler(value = BookUnavailableException.class)
     public ResponseEntity<ResponseObject<?>> handleBookUnavailableException(BookUnavailableException e) {
-
-        log.error(e.getMessage(), e);
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
@@ -199,8 +177,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = HttpRequestMethodNotSupportedException.class)
     public ResponseEntity<ResponseObject<?>> handleHttpRequestMethodNotSupportedException(HttpRequestMethodNotSupportedException e) {
 
-        log.error(e.getMessage(), e);
-
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
                 e.getMessage(),
@@ -213,8 +189,6 @@ public class CustomExceptionHandler {
     @ExceptionHandler(value = NoResourceFoundException.class)
     public ResponseEntity<ResponseObject<?>> handleNoResourceFoundException(NoResourceFoundException e) {
 
-        log.error(e.getMessage(), e);
-
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
                 e.getMessage(),
@@ -226,8 +200,6 @@ public class CustomExceptionHandler {
 
     @ExceptionHandler(value = Exception.class)
     public ResponseEntity<ResponseObject<?>> handleGenericException(Exception e) {
-
-        log.error(e.getMessage(), e);
 
         ResponseObject<?> response =  new ResponseObject<>(
                 ResponseStatus.FAILED,
