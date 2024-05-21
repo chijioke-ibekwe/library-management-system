@@ -5,6 +5,7 @@ import dev.chijiokeibekwe.librarymanagementsystem.dto.request.UserRegistrationRe
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.UserResponse;
 import dev.chijiokeibekwe.librarymanagementsystem.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +26,7 @@ public class UserController {
 
     private final UserService userService;
 
+    @SecurityRequirements
     @Operation(summary = "Sign up or register", description = "Sign up as a user")
     @PostMapping
     public ResponseObject<UserResponse> registerUser(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest){
