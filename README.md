@@ -8,7 +8,7 @@ To successfully run this project, you'll need the following installed on your ma
   as a minimum version.
 - **Docker**
 
-## 🎈 How to Run
+## How to Run
 To run this project:
 1. Clone the repository using the following command:
    ```
