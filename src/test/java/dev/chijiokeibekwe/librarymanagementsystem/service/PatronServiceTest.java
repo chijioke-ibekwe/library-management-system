@@ -1,17 +1,23 @@
 package dev.chijiokeibekwe.librarymanagementsystem.service;
 
+import dev.chijiokeibekwe.librarymanagementsystem.config.CacheTestConfig;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.request.*;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.PatronResponse;
+import dev.chijiokeibekwe.librarymanagementsystem.entity.Address;
+import dev.chijiokeibekwe.librarymanagementsystem.entity.ContactDetails;
 import dev.chijiokeibekwe.librarymanagementsystem.entity.Patron;
 import dev.chijiokeibekwe.librarymanagementsystem.repository.PatronRepository;
 import dev.chijiokeibekwe.librarymanagementsystem.service.impl.PatronServiceImpl;
 import dev.chijiokeibekwe.librarymanagementsystem.util.TestUtil;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -19,7 +25,9 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -27,16 +35,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@Import(CacheTestConfig.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {PatronServiceImpl.class})
 public class PatronServiceTest {
     @Autowired
     private PatronService patronService;
 
+    @Autowired
+    protected CacheManager cacheManager;
+
     @MockBean
     private PatronRepository patronRepository;
 
     private final TestUtil testUtil = new TestUtil();
+
+    @BeforeEach
+    public void clearCache() {
+        Objects.requireNonNull(cacheManager.getCache("patron_details")).clear();
+    }
 
     @Test
     public void testCreatePatron() {
@@ -111,6 +128,16 @@ public class PatronServiceTest {
     }
 
     @Test
+    public void testGetPatronIsCached() {
+        when(patronRepository.findById(2L)).thenReturn(Optional.ofNullable(testUtil.getPatron()));
+
+        patronService.getPatron(2L);
+        patronService.getPatron(2L);
+
+        verify(patronRepository, times(1)).findById(2L);
+    }
+
+    @Test
     public void testGetPatron_whenPatronNotFound() {
         when(patronRepository.findById(2L)).thenReturn(Optional.empty());
 
@@ -146,6 +173,44 @@ public class PatronServiceTest {
         assertThat(patronArgumentCaptor.getValue().getAddress().getCity()).isEqualTo("Ikeja");
         assertThat(patronArgumentCaptor.getValue().getAddress().getState()).isEqualTo("Lagos");
         assertThat(patronArgumentCaptor.getValue().getAddress().getCountry()).isEqualTo("Nigeria");
+    }
+
+    @Test
+    public void testPatronCacheIsUpdatedAfterPatronUpdate() {
+        ArgumentCaptor<Patron> patronArgumentCaptor = ArgumentCaptor.forClass(Patron.class);
+        UpdatePatronRequest request = new UpdatePatronRequest(
+                "Alex",
+                "Otti",
+                new ContactDetailsRequest("+2347088889998", "peter.obi@library.com"),
+                new AddressRequest("23 George Weah Street", "Ikeja", "Lagos", "Nigeria")
+        );
+
+        Patron updatedPatron = Patron.builder()
+                .id(2L)
+                .createdAt(LocalDateTime.of(2023, 5, 18, 15, 22))
+                .firstName("Alex")
+                .lastName("Otti")
+                .contact(ContactDetails.builder()
+                        .phoneNumber("+2347088889998")
+                        .email("peter.obi@library.com")
+                        .build())
+                .address(Address.builder()
+                        .streetAddress("23 George Weah Street")
+                        .city("Ikeja")
+                        .state("Lagos")
+                        .country("Nigeria")
+                        .build())
+                .build();
+
+        when(patronRepository.findById(2L)).thenReturn(Optional.ofNullable(testUtil.getPatron()));
+        when(patronRepository.save(any(Patron.class))).thenReturn(updatedPatron);
+
+        patronService.getPatron(2L);
+        assertThat(cacheManager.getCache("patron_details").get(2L, PatronResponse.class).getFirstName()).isEqualTo("Peter");
+        patronService.updatePatron(2L, request);
+
+        verify(patronRepository, times(1)).save(patronArgumentCaptor.capture());
+        assertThat(cacheManager.getCache("patron_details").get(2L, PatronResponse.class).getFirstName()).isEqualTo("Alex");
     }
 
     @Test

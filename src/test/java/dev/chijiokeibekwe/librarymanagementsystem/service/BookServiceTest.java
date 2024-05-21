@@ -1,19 +1,26 @@
 package dev.chijiokeibekwe.librarymanagementsystem.service;
 
-import dev.chijiokeibekwe.librarymanagementsystem.dto.request.CreateBookRequest;
-import dev.chijiokeibekwe.librarymanagementsystem.dto.request.UpdateBookRequest;
+import dev.chijiokeibekwe.librarymanagementsystem.config.CacheTestConfig;
+import dev.chijiokeibekwe.librarymanagementsystem.dto.request.*;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.BookResponse;
+import dev.chijiokeibekwe.librarymanagementsystem.dto.response.PatronResponse;
+import dev.chijiokeibekwe.librarymanagementsystem.entity.Address;
 import dev.chijiokeibekwe.librarymanagementsystem.entity.Book;
+import dev.chijiokeibekwe.librarymanagementsystem.entity.ContactDetails;
+import dev.chijiokeibekwe.librarymanagementsystem.entity.Patron;
 import dev.chijiokeibekwe.librarymanagementsystem.enums.BookStatus;
 import dev.chijiokeibekwe.librarymanagementsystem.repository.BookRepository;
 import dev.chijiokeibekwe.librarymanagementsystem.service.impl.BookServiceImpl;
 import dev.chijiokeibekwe.librarymanagementsystem.util.TestUtil;
 import jakarta.persistence.EntityNotFoundException;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.cache.CacheManager;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -22,6 +29,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,16 +37,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+@Import(CacheTestConfig.class)
 @ExtendWith(SpringExtension.class)
 @ContextConfiguration(classes = {BookServiceImpl.class})
 public class BookServiceTest {
     @Autowired
     private BookService bookService;
 
+    @Autowired
+    protected CacheManager cacheManager;
+
     @MockBean
     private BookRepository bookRepository;
 
     private final TestUtil testUtil = new TestUtil();
+
+    @BeforeEach
+    public void clearCache() {
+        Objects.requireNonNull(cacheManager.getCache("book_details")).clear();
+    }
 
     @Test
     public void testCreateBook() {
@@ -102,6 +119,16 @@ public class BookServiceTest {
     }
 
     @Test
+    public void testGetBookIsCached() {
+        when(bookRepository.findById(2L)).thenReturn(Optional.ofNullable(testUtil.getBook()));
+
+        bookService.getBook(2L);
+        bookService.getBook(2L);
+
+        verify(bookRepository, times(1)).findById(2L);
+    }
+
+    @Test
     public void testGetUser_whenBookNotFound() {
         when(bookRepository.findById(2L)).thenReturn(Optional.empty());
 
@@ -133,6 +160,37 @@ public class BookServiceTest {
         assertThat(bookArgumentCaptor.getValue().getPublicationYear()).isEqualTo(1982);
         assertThat(bookArgumentCaptor.getValue().getIsbn()).isEqualTo("67818170232");
         assertThat(bookArgumentCaptor.getValue().getStatus()).isEqualTo(BookStatus.AVAILABLE);
+    }
+
+    @Test
+    public void testBookCacheIsUpdatedAfterBookUpdate() {
+        ArgumentCaptor<Book> bookArgumentCaptor = ArgumentCaptor.forClass(Book.class);
+        UpdateBookRequest request = new UpdateBookRequest(
+                "There was a Country",
+                "Chinua Achebe",
+                1982,
+                "67818170232"
+        );
+
+        Book updatedBook = Book.builder()
+                .id(2L)
+                .createdAt(LocalDateTime.of(2023, 10, 21, 11, 15))
+                .title("Things Fall Apart")
+                .author("Chinua Achebe")
+                .publicationYear(1995)
+                .isbn("9123981785")
+                .status(BookStatus.AVAILABLE)
+                .build();
+
+        when(bookRepository.findById(2L)).thenReturn(Optional.ofNullable(testUtil.getBook()));
+        when(bookRepository.save(any(Book.class))).thenReturn(updatedBook);
+
+        bookService.getBook(2L);
+        assertThat(cacheManager.getCache("book_details").get(2L, BookResponse.class).getPublicationYear()).isEqualTo(1991);
+        bookService.updateBook(2L, request);
+
+        verify(bookRepository, times(1)).save(bookArgumentCaptor.capture());
+        assertThat(cacheManager.getCache("book_details").get(2L, BookResponse.class).getPublicationYear()).isEqualTo(1995);
     }
 
     @Test
