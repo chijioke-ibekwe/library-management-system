@@ -5,10 +5,12 @@ import dev.chijiokeibekwe.librarymanagementsystem.dto.request.UserRegistrationRe
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.UserResponse;
 import dev.chijiokeibekwe.librarymanagementsystem.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -30,7 +32,6 @@ public class UserController {
     @Operation(summary = "Sign up or register", description = "Sign up as a user")
     @PostMapping
     public ResponseObject<UserResponse> registerUser(@RequestBody @Valid UserRegistrationRequest userRegistrationRequest){
-        log.info("Received user registration request for email: {}", userRegistrationRequest.email());
 
         return new ResponseObject<>(
                 SUCCESSFUL,
@@ -40,11 +41,12 @@ public class UserController {
     }
 
     @Operation(summary = "Fetch all users", description = "Fetch all users on the platform")
+    @PageableAsQueryParam
     @GetMapping
     @PreAuthorize("hasAuthority('users:read')")
     public ResponseObject<Page<UserResponse>> getAllUsers(@PageableDefault(
                                                             sort = "id", direction = Sort.Direction.DESC
-                                                          ) Pageable pageable){
+                                                          ) @Parameter(hidden = true) Pageable pageable){
 
         return new ResponseObject<>(
                 SUCCESSFUL,

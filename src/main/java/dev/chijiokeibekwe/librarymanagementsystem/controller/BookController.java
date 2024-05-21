@@ -6,9 +6,11 @@ import dev.chijiokeibekwe.librarymanagementsystem.dto.request.UpdateBookRequest;
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.BookResponse;
 import dev.chijiokeibekwe.librarymanagementsystem.service.BookService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,10 +29,11 @@ public class BookController {
     private final BookService bookService;
 
     @Operation(summary = "Fetch all books", description = "Fetch all books in the library")
+    @PageableAsQueryParam
     @GetMapping
     @PreAuthorize("hasAuthority('books:read')")
     public ResponseObject<Page<BookResponse>> getAllBooks(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
-                                                              Pageable pageable){
+                                                          @Parameter(hidden = true) Pageable pageable){
 
         return new ResponseObject<>(
                 SUCCESSFUL,
@@ -55,7 +58,6 @@ public class BookController {
     @PostMapping
     @PreAuthorize("hasAuthority('books:write')")
         public ResponseObject<BookResponse> createBook(@RequestBody @Valid CreateBookRequest createBookRequest){
-        log.info("Received request to create the following book: {}", createBookRequest);
 
         return new ResponseObject<>(
                 SUCCESSFUL,
@@ -69,7 +71,6 @@ public class BookController {
     @PreAuthorize("hasAuthority('books:write')")
     public ResponseObject<BookResponse> updateBook(@PathVariable("book_id") Long bookId,
                                                    @RequestBody @Valid UpdateBookRequest updateBookRequest){
-        log.info("Received request to update book with ID {} with the following details: {}", bookId, updateBookRequest);
 
         return new ResponseObject<>(
                 SUCCESSFUL,
@@ -82,7 +83,7 @@ public class BookController {
     @DeleteMapping("/{book_id}")
     @PreAuthorize("hasAuthority('books:delete')")
     public ResponseObject<Void> deleteBook(@PathVariable("book_id") Long bookId){
-        log.info("Received request to delete book with ID {}", bookId);
+
         bookService.deleteBook(bookId);
 
         return new ResponseObject<>(

@@ -6,9 +6,11 @@ import dev.chijiokeibekwe.librarymanagementsystem.dto.request.UpdatePatronReques
 import dev.chijiokeibekwe.librarymanagementsystem.dto.response.PatronResponse;
 import dev.chijiokeibekwe.librarymanagementsystem.service.PatronService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -27,10 +29,11 @@ public class PatronController {
     private final PatronService patronService;
 
     @Operation(summary = "Fetch all patrons", description = "Fetch all patrons of the library")
+    @PageableAsQueryParam
     @GetMapping
     @PreAuthorize("hasAuthority('patrons:read')")
     public ResponseObject<Page<PatronResponse>> getAllPatrons(@PageableDefault(sort = "id", direction = Sort.Direction.DESC)
-                                                                  Pageable pageable){
+                                                              @Parameter(hidden = true) Pageable pageable){
 
         return new ResponseObject<>(
                 SUCCESSFUL,
@@ -55,7 +58,6 @@ public class PatronController {
     @PostMapping
     @PreAuthorize("hasAuthority('patrons:write')")
     public ResponseObject<PatronResponse> createPatron(@RequestBody @Valid CreatePatronRequest createPatronRequest){
-        log.info("Received request to create the following patron: {}", createPatronRequest);
 
         return new ResponseObject<>(
                 SUCCESSFUL,
@@ -69,7 +71,6 @@ public class PatronController {
     @PreAuthorize("hasAuthority('patrons:write')")
     public ResponseObject<PatronResponse> updatePatron(@PathVariable("patron_id") Long patronId,
                                                        @RequestBody @Valid UpdatePatronRequest updatePatronRequest){
-        log.info("Received request to update patron with ID {} with the following details: {}", patronId, updatePatronRequest);
 
         return new ResponseObject<>(
                 SUCCESSFUL,
@@ -82,7 +83,7 @@ public class PatronController {
     @DeleteMapping("/{patron_id}")
     @PreAuthorize("hasAuthority('patrons:delete')")
     public ResponseObject<Void> deletePatron(@PathVariable("patron_id") Long patronId){
-        log.info("Received request to delete patron with ID {}", patronId);
+
         patronService.deletePatron(patronId);
 
         return new ResponseObject<>(
