@@ -1,0 +1,11 @@
+spring:
+  datasource:
+    password: postgres
+    url: jdbc:postgresql://localhost:5431/library-manager
+    username: postgres
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      password: redis_password
+      timeout: 120000

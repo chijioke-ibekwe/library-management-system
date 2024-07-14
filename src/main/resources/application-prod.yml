@@ -1,0 +1,18 @@
+server:
+  port: 8080
+  host: https://library-manager-uxpb.onrender.com
+
+spring:
+  datasource:
+    password: ${DATABASE_PASSWORD}
+    url: ${DATABASE_URL}
+    username: ${DATABASE_USERNAME}
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      username: ${REDIS_USERNAME}
+      password: ${REDIS_PASSWORD}
+      timeout: ${REDIS_TIMEOUT}
+      ssl:
+        enabled: true

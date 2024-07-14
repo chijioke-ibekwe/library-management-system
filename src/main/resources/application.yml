@@ -1,14 +1,10 @@
 server:
-  port: 8081
-  host: http://localhost:8081
+  port: 8085
+  host: http://localhost
 
 spring:
   application:
     name: library-management-system
-  datasource:
-    password: postgres
-    url: jdbc:postgresql://localhost:5431/library-manager
-    username: postgres
   jpa:
     properties:
       hibernate:
@@ -16,12 +12,8 @@ spring:
     show-sql: true
   liquibase:
     change-log: 'classpath:/db/changelog-master.yaml'
-  data:
-    redis:
-      host: localhost
-      port: 6379
-      password: redis_password
-      timeout: 120000
+  profiles:
+    active: dev
 
 rsa:
   public-key: classpath:certs/public.pem
