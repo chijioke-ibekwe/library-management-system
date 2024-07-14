@@ -7,6 +7,7 @@ To successfully run this project, you'll need the following installed on your ma
 - **JDK >= v17.** That is because this project was developed using Spring Boot 3, which requires Java 17
   as a minimum version.
 - **Docker**
+- **OpenSSL**
 
 ## How to Run
 To run this project:
@@ -32,16 +33,23 @@ To run this project:
    ./mvnw test
    ```
    
-5. To start the application, run the following command:
+5. Generate the asymmetric keys for encrypting and decrypting the JWT, by running the `generate_keys.sh` script
+   from the root directory of the project using:
+   ```
+   ./generate_keys.sh
+   ```
+   Ensure that the generated keys directory is git ignored to prevent committing them to source control
+
+6. To start the application, run the following command:
    ```
    ./mvnw clean compile exec:java
    ```
    Liquibase will run the migration files within the `src/main/resources/db` directory, upon startup, to set up the 
    database schema. The application will be running on `http://localhost:8081`
 
-6. The Swagger API documentation for this project will be running on `http://localhost:8081/swagger-ui/index.html`
+7. The Swagger API documentation for this project will be running on `http://localhost:8081/swagger-ui/index.html`
 
-7. All the endpoints are protected (using Spring Security) aside from the user sign up, user login, and swagger docs 
+8. All the endpoints are protected (using Spring Security) aside from the user sign up, user login, and swagger docs 
    endpoints. Hence, you should take the following initial steps:
    - Register a user using the sign up API `http://localhost:8081/swagger-ui/index.html#/user-controller/registerUser`
    - Login with your credentials using the login API `http://localhost:8081/swagger-ui/index.html#/authentication-controller/login`
